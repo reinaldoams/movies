@@ -1,23 +1,16 @@
 "use client"
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { useSearchParams } from 'next/navigation'
-import useMoviesApi from '../Hooks/useMoviesAPI'
+import MovieBox from '../Components/MovieBox'
 
 type Props = {}
 
 export default function page({ }: Props) {
-  const [movieObj, setMovieObj] = useState()
-  const { getMovie } = useMoviesApi()
   const searchParams = useSearchParams()
-  const searchTerm = searchParams.get('searchTerm')
-  useEffect(() => {
-    const movieRes = await getMovie(searchTerm, false)
-    const { Actors, Country, Director, Genre, Language, Runtime, Title, Year, imdbID, imdbRating, imdbVotes } = movieRes
-    const movieObjForState = { Actors, Country, Director, Genre, Language, Runtime, Title, Year, imdbID, imdbRating, imdbVotes }
-    setMovieObj(movieObjForState)
-    console.log(movieObj)
-  }, [])
+  const searchTerm = searchParams.get('s')
   return (
-    <div>page</div>
+    <div>
+      {searchTerm ? <MovieBox movieNameOrId={searchTerm} isId={false} /> : <></>}
+    </div>
   )
 }
