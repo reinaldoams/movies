@@ -5,6 +5,7 @@ import useMoviesApi from '../Hooks/useMoviesApi'
 type Props = { movieNameOrId: string, isId?: boolean }
 
 export default function MovieBox({ movieNameOrId, isId }: Props) {
+  if (movieNameOrId === '') return <div>Component waiting for name</div>
   const [movieObj, setMovieObj] = useState<any>()
   const { getMovie } = useMoviesApi()
   useEffect(() => {
@@ -25,7 +26,7 @@ export default function MovieBox({ movieNameOrId, isId }: Props) {
         <p>Language: {movieObj.Language}</p>
         <p>Country: {movieObj.Country}</p>
         {movieObj.Actors ? <ul>Actors: {movieObj.Actors.split(', ').map((actor: string) => (
-          <li>{actor}</li>
+          <li key={actor}>{actor}</li>
         ))}</ul> : <></>}
       </>) : <></>}
     </div>
