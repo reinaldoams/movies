@@ -1,5 +1,6 @@
 async function getMovie(movieNameOrId: string, isId: boolean): Promise<any> {
-  const apiKey = process.env.APIKEY
+  const apiKey = process.env.NEXT_PUBLIC_MOVIES_API_KEY
+  console.log('apiKey getMovie', apiKey)
   let apiResponse: any
   if (isId) {
     apiResponse = await fetch(`http://www.omdbapi.com/?apikey=${apiKey}&i=${movieNameOrId}`)
@@ -11,6 +12,26 @@ async function getMovie(movieNameOrId: string, isId: boolean): Promise<any> {
   return { Actors, Country, Director, Genre, Language, Runtime, Title, Year, imdbID, imdbRating, imdbVotes }
 }
 
+async function getImage(searchTerm: string): Promise<any> {
+  const apiKey = process.env.NEXT_PUBLIC_IMAGES_API_KEY || ''
+  console.log('apiKey getImage', apiKey)
+  const headers = new Headers()
+  headers.set('Authorization', apiKey)
+  headers.set('Content-Type', 'application/json')
+  try {
+    const apiResponse = await fetch(`https://api.pexels.com/v1/search?query=${searchTerm}&per_page=1&orientation=square&size=medium`, {
+      headers
+    })
+    const apiData = apiResponse && await apiResponse.json()
+    const imageUrl = apiData?.photos?.[0]?.src?.medium
+    const imageAlt = apiData?.photos?.[0]?.alt
+    if (!imageUrl) throw Error('Error getting api response')
+    return { imageUrl, imageAlt }
+  } catch (error) {
+    return { error }
+  }
+}
+
 export default function useMoviesApi() {
-  return { getMovie }
+  return { getMovie, getImage }
 }

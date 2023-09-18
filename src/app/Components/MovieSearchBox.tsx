@@ -19,10 +19,9 @@ export default function MovieSearchBox() {
   return (
     <div>
       <form onSubmit={e => e.preventDefault()}>
-        <label htmlFor="searchTermInput">Search a movie by the name:</label>
+        <label htmlFor="searchTermInput">Search a movie:</label>
         <input id="searchTermInput" value={searchTermInput} onChange={e => setSearchTermInput(e.target.value)} />
       </form>
-      <p>this is the searchTerm: {searchTerm}</p>
       <MovieBox movieNameOrId={searchTerm} />
     </div>
   )
