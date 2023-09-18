@@ -17,12 +17,16 @@ export default function MovieSearchBox() {
   }, [searchTermInput])
 
   return (
-    <div>
-      <form onSubmit={e => e.preventDefault()}>
-        <label htmlFor="searchTermInput">Search a movie:</label>
-        <input id="searchTermInput" value={searchTermInput} onChange={e => setSearchTermInput(e.target.value)} />
-      </form>
-      <MovieBox movieNameOrId={searchTerm} />
+    <div className="flex flex-col justify-center items-center h-[100vh]">
+      <div className="!z-5 relative flex flex-col rounded-[20px] max-w-[300px] md:max-w-[400px] bg-white bg-clip-border shadow-3xl shadow-shadow-500 flex flex-col w-full !p-6 3xl:p-![18px] bg-white undefined">
+        <div className="mb-3">
+          <label htmlFor="searchTermInput" className="text-sm text-navy-700 dark:text-white font-bold">Search a movie:</label>
+          <input type="text" id="searchTermInput" placeholder="Search a movie..."
+            className="mt-2 flex h-12 w-full items-center justify-center rounded-xl border bg-white/0 p-3 text-sm outline-none border-gray-200"
+            onChange={e => setSearchTermInput(e.target.value)} />
+        </div>
+        <MovieBox movieNameOrId={searchTerm} />
+      </div>
     </div>
   )
 }
