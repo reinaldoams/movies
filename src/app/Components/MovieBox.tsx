@@ -3,9 +3,9 @@ import React, { useEffect, useState } from 'react'
 import useMoviesApi from '../Hooks/useMoviesApi'
 import Image from 'next/image'
 
-type Props = { movieNameOrId: string, isId?: boolean }
+type Props = { movieNameOrId: string, isId?: boolean, favoritable?: boolean }
 
-export default function MovieBox({ movieNameOrId, isId }: Props) {
+export default function MovieBox({ movieNameOrId, isId, favoritable }: Props) {
   const [movieObj, setMovieObj] = useState<any>()
   const [imageObj, setImageObj] = useState<{ imageUrl: string, imageAlt: string }>({ imageUrl: '', imageAlt: '' })
   const { getMovie, getImage } = useMoviesApi()
@@ -28,7 +28,10 @@ export default function MovieBox({ movieNameOrId, isId }: Props) {
             backgroundImage: `url(${imageObj?.imageUrl})`,
             backgroundSize: 'cover',
             backgroundPosition: 'center'
-          }}></div> : <></>}
+          }}>
+            {favoritable ? <span className="flex justify-end p-4 text-4xl">💙</span> : <></>}
+            {/*favoritable ? <span>🤍</span> : <></>*/}
+          </div> : <></>}
           <div className='p-4 sm:p-6'>
             <p className='font-bold text-gray-700 text-[22px] leading-7 mb-1'>{movieObj?.Title || 'Search a movie!'}</p>
             {movieObj?.Director !== 'N/A' ? <div className='flex flex-row'>
