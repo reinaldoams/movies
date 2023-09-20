@@ -1,7 +1,8 @@
 import './globals.css'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
-import BottomNavBar from './Components/BottomNavBar'
+import BottomNavBar from '../components/BottomNavBar'
+import { MoviesListContextProvider } from '@/context/MoviesListContext'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -16,10 +17,13 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
-      <body className={inter.className}>{children}
-        <BottomNavBar />
-      </body>
-    </html>
+    <MoviesListContextProvider>
+      <html lang="en">
+        <body className={inter.className}>
+          {children}
+          <BottomNavBar />
+        </body>
+      </html>
+    </MoviesListContextProvider>
   )
 }

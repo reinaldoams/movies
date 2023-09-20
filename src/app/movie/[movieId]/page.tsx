@@ -1,6 +1,6 @@
 "use client"
-import MovieBox from '@/app/Components/MovieBox'
-import useMoviesApi from '@/app/Hooks/useMoviesApi'
+
+import MovieBox from '@/components/MovieBox'
 import React, { useEffect, useState } from 'react'
 
 type Props = { params: { movieId: string } }

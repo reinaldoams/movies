@@ -25,7 +25,7 @@ export default function MovieSearchBox() {
             className="mt-2 flex h-12 w-full items-center justify-center rounded-xl border bg-white/0 p-3 text-sm outline-none border-gray-200"
             onChange={e => setSearchTermInput(e.target.value)} />
         </div>
-        <MovieBox movieNameOrId={searchTerm} favoritable />
+        <MovieBox movieNameOrId={searchTerm} favoritable favorite={true} />
       </div>
     </div>
   )

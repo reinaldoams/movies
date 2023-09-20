@@ -1,4 +1,4 @@
-import MovieSearchBox from "./Components/MovieSearchBox"
+import MovieSearchBox from "../components/MovieSearchBox"
 
 export default function Home() {
   return (
