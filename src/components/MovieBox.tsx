@@ -12,9 +12,16 @@ export default function MovieBox({ movieNameOrId, isId, favoritable }: Props) {
   const { getMovie, getImage } = useMoviesApi()
   const [isFavorite, setIsFavorite] = useState<boolean>(false)
 
-  const {favoritedMovies, setFavoritedMovies} = useMoviesListContext()
-  function handleHeartClick (title: string) {
-    setFavoritedMovies && favoritedMovies && setFavoritedMovies([...favoritedMovies, title])
+  const { favoritedMovies, setFavoritedMovies } = useMoviesListContext()
+  function handleHeartClick(title: string, isFavorite: boolean) {
+    if (!isFavorite) {
+      setFavoritedMovies && favoritedMovies && setFavoritedMovies([...favoritedMovies, title])
+    } else {
+      const filteredFavoritedMovies = favoritedMovies && [...favoritedMovies].filter(movieName => {
+        return movieName !== title
+      })
+      setFavoritedMovies && filteredFavoritedMovies && setFavoritedMovies(filteredFavoritedMovies)
+    }
   }
 
   useEffect(() => {
@@ -24,13 +31,12 @@ export default function MovieBox({ movieNameOrId, isId, favoritable }: Props) {
       setMovieObj(movieObjForState)
       setImageObj(imageObjFromFetch)
     }
-    fetchMovie()
-
-    if (movieObj?.Title && favoritedMovies?.indexOf(movieObj.Title) !== -1) {
+    if (movieNameOrId) fetchMovie()   
+    if (movieObj?.Title && favoritedMovies?.indexOf(movieObj?.imdbID) !== -1) {
       setIsFavorite(true)
     } else {
       setIsFavorite(false)
-    }
+    } 
   }, [movieNameOrId, favoritedMovies])
 
   return (
@@ -44,44 +50,29 @@ export default function MovieBox({ movieNameOrId, isId, favoritable }: Props) {
           }}>
             {favoritable && movieObj?.Title ? (
               <>
-              {isFavorite ? <span className="flex justify-end p-4 text-4xl" onClick={() => handleHeartClick(movieObj.Title)}>💙</span> : <span className="flex justify-end p-4 text-4xl">🤍</span>}
+                <span className="flex justify-end p-4 text-4xl" onClick={() => handleHeartClick(movieObj.imdbID, isFavorite)}>
+                  <span className="cursor-pointer">{isFavorite ? '💙' : '🤍'}</span>
+                </span>
               </>
             ) : <></>}
-      </div> : <></>}
-      <div className='p-4 sm:p-6'>
-        <p className='font-bold text-gray-700 text-[22px] leading-7 mb-1'>{movieObj?.Title || 'Search a movie!'}</p>
-        {movieObj?.Director !== 'N/A' ? <div className='flex flex-row'>
-          <p className='text-[17px] font-bold text-[#0FB478]'>{movieObj?.Director}</p>
-        </div> : <></>}
-        {(movieObj?.Runtime || movieObj?.Genre || movieObj?.Language || movieObj?.Country) ? <>
-          <p className="text-[17px] font-bold text-[#0FB478]">Runtime: {movieObj?.Runtime}</p>
-          <p className="text-[17px] font-bold text-[#0FB478]">Genre: {movieObj?.Genre}</p>
-          <p className="text-[17px] font-bold text-[#0FB478]">Language: {movieObj?.Language}</p>
-          <p className="text-[17px] font-bold text-[#0FB478]">Country: {movieObj?.Country}</p>
-        </> : <></>}
-        {movieObj?.Actors ? <ul className="text-[17px] font-bold text-black">Actors: {movieObj?.Actors.split(', ').map((actor: string) => (
-          <li className="text-[17px] font-bold text-[#0FB478]" key={actor}>{actor}</li>
-        ))}</ul> : <></>}
-      </div>
-    </div>
+          </div> : <></>}
+          <div className='p-4 sm:p-6'>
+            <p className='font-bold text-gray-700 text-[22px] leading-7 mb-1'>{movieObj?.Title || 'Search a movie!'}</p>
+            {movieObj?.Director !== 'N/A' ? <div className='flex flex-row'>
+              <p className='text-[17px] font-bold text-[#0FB478]'>{movieObj?.Director}</p>
+            </div> : <></>}
+            {(movieObj?.Runtime || movieObj?.Genre || movieObj?.Language || movieObj?.Country) ? <>
+              <p className="text-[17px] font-bold text-[#0FB478]">Runtime: {movieObj?.Runtime}</p>
+              <p className="text-[17px] font-bold text-[#0FB478]">Genre: {movieObj?.Genre}</p>
+              <p className="text-[17px] font-bold text-[#0FB478]">Language: {movieObj?.Language}</p>
+              <p className="text-[17px] font-bold text-[#0FB478]">Country: {movieObj?.Country}</p>
+            </> : <></>}
+            {movieObj?.Actors ? <ul className="text-[17px] font-bold text-black">Actors: {movieObj?.Actors.split(', ').map((actor: string) => (
+              <li className="text-[17px] font-bold text-[#0FB478]" key={actor}>{actor}</li>
+            ))}</ul> : <></>}
+          </div>
+        </div>
       </div >
     </div >
-  )
-
-  return (
-    <div>
-      {movieObj ? (<>
-        {imageObj?.imageUrl ? <Image src={imageObj?.imageUrl || ''} alt='image search result' width={350} height={350} /> : <></>}
-        <h2>{movieObj?.Title}{movieObj?.imdbRating ? ` - ${movieObj?.imdbRating} ☆ ${movieObj?.imdbVotes ? `(${movieObj?.imdbVotes})` : ''}` : ''}</h2>
-        <h3>{movieObj?.Director}</h3>
-        <p>Runtime: {movieObj?.Runtime}</p>
-        <p>Genre: {movieObj?.Genre}</p>
-        <p>Language: {movieObj?.Language}</p>
-        <p>Country: {movieObj?.Country}</p>
-        {movieObj?.Actors ? <ul>Actors: {movieObj?.Actors.split(', ').map((actor: string) => (
-          <li key={actor}>{actor}</li>
-        ))}</ul> : <></>}
-      </>) : <></>}
-    </div>
   )
 }
