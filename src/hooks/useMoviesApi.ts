@@ -1,4 +1,25 @@
-async function getMovie(movieNameOrId: string, isId: boolean): Promise<any> {
+export interface movieObject {
+  Actors: string
+  Country: string
+  Director: string
+  Genre: string
+  Language: string
+  Runtime: string
+  Title: string
+  Year: string
+  imdbID: string
+  imdbRating: string
+  imdbVotes: string
+}
+
+export interface imageObj {
+  imageUrl: string
+  imageAlt: string
+  imgError: any
+}
+
+
+async function getMovie(movieNameOrId: string, isId: boolean): Promise<movieObject> {
   const apiKey = process.env.NEXT_PUBLIC_MOVIES_API_KEY
   let apiResponse: any
   if (isId) {
@@ -11,7 +32,7 @@ async function getMovie(movieNameOrId: string, isId: boolean): Promise<any> {
   return { Actors, Country, Director, Genre, Language, Runtime, Title, Year, imdbID, imdbRating, imdbVotes }
 }
 
-async function getImage(searchTerm: string): Promise<any> {
+async function getImage(searchTerm: string): Promise<imageObj> {
   const apiKey = process.env.NEXT_PUBLIC_IMAGES_API_KEY || ''
   const headers = new Headers()
   headers.set('Authorization', apiKey)
@@ -21,12 +42,15 @@ async function getImage(searchTerm: string): Promise<any> {
       headers
     })
     const apiData = apiResponse && await apiResponse.json()
-    const imageUrl = apiData?.photos?.[0]?.src?.medium
+    console.log(apiResponse)
+    console.log(apiData)
+    const imageUrl = apiData?.photos?.[0]?.src?.medium || apiData?.url
+    console.log(imageUrl)
     const imageAlt = apiData?.photos?.[0]?.alt
     if (!imageUrl) throw Error('Error getting api response')
-    return { imageUrl, imageAlt }
-  } catch (error) {
-    return { error }
+    return { imageUrl, imageAlt, imgError: false }
+  } catch (imgError) {
+    return { imageUrl: '', imageAlt: '', imgError }
   }
 }
 
