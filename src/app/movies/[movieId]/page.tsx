@@ -5,9 +5,10 @@ import useMoviesApi, { imageObj, movieObject } from '@/hooks/useMoviesApi'
 import React, { useEffect, useState } from 'react'
 
 type Props = { params: { movieId: string } }
+type movieObjKeyValueObj = {[key in movieObject]: string} | undefined
 
 export default function Movie({ params: { movieId } }: Props) {
-  const [movieObj, setMovieObj] = useState<movieObject>()
+  const [movieObj, setMovieObj] = useState<movieObject>({ Actors: '', Country: '', Director: '', Genre: '', Language: '', Runtime: '', Title: '', Year: '', imdbID: '', imdbRating: '', imdbVotes: '',  })
   const [imageObj, setImageObj] = useState<imageObj>({ imageUrl: '', imageAlt: '', imgError: false })
 
   const { getMovie, getImage } = useMoviesApi()
@@ -23,6 +24,15 @@ export default function Movie({ params: { movieId } }: Props) {
     if (movieId) fetchMovie()
   }, [movieId, favoritedMovies])
 
+  const movieArrFromObj: movieObjKeyValueObj[] = movieObj && Object.keys(movieObj).map(key => {
+    if (key === 'Director') return undefined
+    if (key === 'Year') return undefined
+    return { [key]: movieObj[key as keyof typeof movieObj] }
+  })
+  movieArrFromObj.filter(item => (
+    !!item?.['Director']
+  ))
+  console.log(movieArrFromObj)
   return (
     <div>
       {movieObj?.Title ? <div className="md:flex items-start justify-center py-12 2xl:px-20 md:px-6 px-4">
@@ -37,28 +47,21 @@ export default function Movie({ params: { movieId } }: Props) {
           : <></>}
         <div className="xl:w-2/5 md:w-1/2 lg:ml-8 md:ml-6 md:mt-0 mt-6">
           <div className="border-b border-gray-200 pb-6">
-            <p className="text-sm leading-none text-gray-600 dark:text-black ">{movieObj.Title}</p>
+            <p className="text-6xl leading-none text-gray-600 dark:text-black ">{movieObj.Title}</p>
             <h1 className="lg:text-2xl text-xl font-semibold lg:leading-6 leading-7 text-black dark:text-white mt-2">Balenciaga Signature Sweatshirt</h1>
           </div>
-          <div className="py-4 border-b border-gray-200 flex items-center justify-between">
-            <p className="text-base leading-4 text-black dark:text-black">Colours</p>
+          {movieObj?.Director ? <div className="py-4 border-b border-gray-200 flex items-center justify-between">
+            <p className="text-base leading-4 text-black dark:text-black">Director</p>
             <div className="flex items-center justify-center">
-              <p className="text-sm leading-none text-gray-600 dark:text-black">Smoke Blue with red accents</p>
-              <div className="w-6 h-6 bg-gradient-to-b from-gray-900 to-indigo-500 ml-3 mr-4 cursor-pointer"></div>
-              <svg className="cursor-pointer text-black dark:text-white" width="6" height="10" viewBox="0 0 6 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M1 1L5 5L1 9" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
+              <p className="text-sm leading-none text-gray-600 dark:text-black">{movieObj.Director}</p>
             </div>
-          </div>
-          <div className="py-4 border-b border-gray-200 flex items-center justify-between">
-            <p className="text-base leading-4 text-black dark:text-black">Size</p>
+          </div> : <></>}
+          {movieObj.Year ? <div className="py-4 border-b border-gray-200 flex items-center justify-between">
+            <p className="text-base leading-4 text-black dark:text-black">Year</p>
             <div className="flex items-center justify-center">
-              <p className="text-sm leading-none text-gray-600 dark:text-black mr-3">38.2</p>
-              <svg className="text-black dark:text-white cursor-pointer" width="6" height="10" viewBox="0 0 6 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M1 1L5 5L1 9" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
+              <p className="text-sm leading-none text-gray-600 dark:text-black mr-3">{movieObj.Year}</p>
             </div>
-          </div>
+          </div> : <></>}
           <button className="dark:bg-white dark:text-gray-900 dark:hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-800 text-base flex items-center justify-center leading-none text-white bg-gray-800 w-full py-4 hover:bg-gray-700 focus:outline-none">
             <svg className="mr-3 text-white dark:text-gray-900" width="16" height="17" viewBox="0 0 16 17" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M7.02301 7.18999C7.48929 6.72386 7.80685 6.12992 7.93555 5.48329C8.06425 4.83666 7.9983 4.16638 7.74604 3.55724C7.49377 2.94809 7.06653 2.42744 6.51835 2.06112C5.97016 1.6948 5.32566 1.49928 4.66634 1.49928C4.00703 1.49928 3.36252 1.6948 2.81434 2.06112C2.26615 2.42744 1.83891 2.94809 1.58665 3.55724C1.33439 4.16638 1.26843 4.83666 1.39713 5.48329C1.52583 6.12992 1.8434 6.72386 2.30968 7.18999L4.66634 9.54749L7.02301 7.18999Z" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round" />
